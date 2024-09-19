@@ -1,7 +1,6 @@
 package org.example.socialbloggingsite.articles.controller;
 
-import org.example.socialbloggingsite.articles.dtos.CreateArticleDto;
-import org.example.socialbloggingsite.articles.dtos.GetArticleDto;
+import org.example.socialbloggingsite.articles.dtos.UpdateArticleDto;
 import org.example.socialbloggingsite.articles.model.Article;
 import org.example.socialbloggingsite.articles.service.ArticleService;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +15,7 @@ public class ArticleController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createArticle(@RequestBody CreateArticleDto createArticleDto) throws Exception {
+    public ResponseEntity<?> createArticle(@RequestBody UpdateArticleDto createArticleDto) throws Exception {
         Article article = articleService.createArticle(createArticleDto);
         return ResponseEntity.ok(article);
     }

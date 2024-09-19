@@ -1,7 +1,6 @@
 package org.example.socialbloggingsite.articles.service;
 
-import org.example.socialbloggingsite.articles.dtos.CreateArticleDto;
-import org.example.socialbloggingsite.articles.dtos.GetArticleDto;
+import org.example.socialbloggingsite.articles.dtos.UpdateArticleDto;
 import org.example.socialbloggingsite.articles.model.Article;
 import org.example.socialbloggingsite.articles.repositories.ArticleRepository;
 import org.example.socialbloggingsite.user.Repositories.UserRepository;
@@ -11,7 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.List;
 
 @Service
 public class ArticleService {
@@ -23,7 +22,7 @@ public class ArticleService {
         this.userRepository = userRepository;
     }
 
-    public Article createArticle(CreateArticleDto input) throws Exception {
+    public Article createArticle(UpdateArticleDto input) throws Exception {
         try {
             if(input.getTitle() == null || input.getUser_id() == 0 || input.getContent() == null){
                 throw new Exception("Title name or content is required");
@@ -47,9 +46,10 @@ public class ArticleService {
 
         User currentUser = (User) authentication.getPrincipal();
         int id = currentUser.getId();
-        Optional<Article> article = articleRepository.findByUserId(id);
-        if(article.isPresent()){
-            return ResponseEntity.ok(article.get());
+
+        List<Article> article = articleRepository.findByUserId(id);
+        if(!article.isEmpty()){
+            return ResponseEntity.ok(article);
         }
         return ResponseEntity.notFound().build();
     }
