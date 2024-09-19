@@ -34,4 +34,10 @@ public class ArticleController {
         return ResponseEntity.ok(article);
     }
 
+    @DeleteMapping("/me/{id}")
+    public ResponseEntity<?> deleteArticle(@PathVariable Long id) throws Exception {
+        articleService.deleteArticle(id);
+        return ResponseEntity.ok("Deleted article successfully");
+    }
+
 }

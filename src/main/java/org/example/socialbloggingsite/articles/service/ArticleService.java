@@ -74,4 +74,15 @@ public class ArticleService {
             throw new Exception(e.getMessage());
         }
     }
+
+    public void deleteArticle(Long id) throws Exception {
+        try {
+            articleRepository.findById(id).orElseThrow(() -> new Exception("Article Not Found"));
+            articleRepository.deleteById(id);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new Exception(e.getMessage());
+        }
+
+    }
 }
