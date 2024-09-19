@@ -1,6 +1,8 @@
 package org.example.socialbloggingsite.user.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.example.socialbloggingsite.articles.model.Article;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -119,6 +121,19 @@ public class User implements UserDetails {
 
     public User setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+        return this;
+    }
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<Article> articles;
+
+    public List<Article> getArticles() {
+        return articles;
+    }
+
+    public User setArticles(List<Article> articles) {
+        this.articles = articles;
         return this;
     }
 }
