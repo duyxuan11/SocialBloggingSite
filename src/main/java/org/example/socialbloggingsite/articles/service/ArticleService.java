@@ -5,6 +5,8 @@ import org.example.socialbloggingsite.articles.model.Article;
 import org.example.socialbloggingsite.articles.repositories.ArticleRepository;
 import org.example.socialbloggingsite.user.Repositories.UserRepository;
 import org.example.socialbloggingsite.user.model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -84,5 +86,17 @@ public class ArticleService {
             throw new Exception(e.getMessage());
         }
 
+    }
+
+    public List<Article> getAllArticles() {
+        List<Article> articles = new ArrayList<>();
+        articleRepository.findAll().forEach(articles::add);
+
+        return articles;
+    }
+
+    public List<Article> getArticlePage(int id){
+        Page<Article> page = articleRepository.findAll(PageRequest.of((id-1), 5));
+        return page.getContent();
     }
 }
