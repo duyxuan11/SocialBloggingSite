@@ -1,18 +1,18 @@
-package org.example.socialbloggingsite.user.controller;
+package org.example.socialbloggingsite.users.controller;
 
-import org.example.socialbloggingsite.user.dtos.UpdateUserDto;
-import org.example.socialbloggingsite.user.model.User;
-import org.example.socialbloggingsite.user.service.UserService;
+import org.example.socialbloggingsite.users.dtos.UserDtoUpdate;
+import org.example.socialbloggingsite.users.model.User;
+import org.example.socialbloggingsite.users.service.impl.UserServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/auth/users")
+@RequestMapping("/api/auth/users")
 @RestController
 public class UserController {
-    private final UserService userService;
-    public UserController(UserService userService) {
+    private final UserServiceImpl userService;
+    public UserController(UserServiceImpl userService) {
         this.userService = userService;
     }
 
@@ -24,9 +24,9 @@ public class UserController {
         return ResponseEntity.ok(currentUser);
     }
 
-    @PutMapping("/me")
-    public ResponseEntity<?> updateUser(@RequestBody UpdateUserDto updateUserDto) throws Exception {
-        User updateUser = userService.updateUser(updateUserDto);
-        return ResponseEntity.ok(updateUser);
-    }
+//    @PutMapping("/me")
+//    public ResponseEntity<?> updateUser(@RequestBody UserDtoUpdate updateUserDto) throws Exception {
+//        User updateUser = userService.updateUser(updateUserDto);
+//        return ResponseEntity.ok(updateUser);
+//    }
 }

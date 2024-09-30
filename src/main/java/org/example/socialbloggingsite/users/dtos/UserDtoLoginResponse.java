@@ -1,22 +1,16 @@
-package org.example.socialbloggingsite.users.response;
+package org.example.socialbloggingsite.users.dtos;
 
-public class LoginResponse {
-    private String token;
-    private long expiresIn;
-    public String getToken() {
-        return token;
-    }
-    public LoginResponse setToken(String token) {
-        this.token = token;
-        return this;
-    }
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
-    public long getExpiresIn() {
-        return expiresIn;
-    }
-
-    public LoginResponse setExpiresIn(long expiresIn) {
-        this.expiresIn = expiresIn;
-        return this;
-    }
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Getter
+@Setter
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class UserDtoLoginResponse {
+    String token;
+    long expiresIn;
 }

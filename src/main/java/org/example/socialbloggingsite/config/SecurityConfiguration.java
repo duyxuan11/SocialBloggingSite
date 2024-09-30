@@ -1,9 +1,13 @@
-package org.example.socialbloggingsite.user.config;
+package org.example.socialbloggingsite.config;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+import org.example.socialbloggingsite.filters.JwtAuthenticationFilter;
+import org.example.socialbloggingsite.utils.constants.Authentication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -18,9 +22,24 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SecurityConfiguration {
-    private final AuthenticationProvider authenticationProvider;
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    String[] PUBLIC_URLS = {
+            "api/auth/login", "/api/auth/logout", "/api/auth/register"};
+    String[] PRIVATE_ADMIN_URLS = {
+            "/api/admin/**"};
+    String[] PRIVATE_USERS_URLS = {"/api/user/**"};
+
+    AuthenticationProvider authenticationProvider;
+    JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    static  String[] SWAGGER_WHITELIST = {
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+            "/swagger-resources/**",
+            "/swagger-resources"
+    };
 
     public SecurityConfiguration(AuthenticationProvider authenticationProvider, JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.authenticationProvider = authenticationProvider;
@@ -34,8 +53,10 @@ public class SecurityConfiguration {
 //                .csrf().disable()
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((requests) -> {
-                    requests.requestMatchers("/auth/**").permitAll()
-                            .requestMatchers("/articles/**").permitAll()
+                    requests.requestMatchers(PUBLIC_URLS).permitAll()
+                            .requestMatchers(PRIVATE_ADMIN_URLS).hasAnyAuthority(Authentication.ROLE_ADMIN.name())
+                            .requestMatchers(PRIVATE_USERS_URLS).hasAnyAuthority(Authentication.ROLE_USER.name(),Authentication.ROLE_ADMIN.name())
+                            .requestMatchers(SWAGGER_WHITELIST).permitAll()
 //                            .permitAll()
                             .anyRequest().authenticated();
 //                            .anyRequest().permitAll();

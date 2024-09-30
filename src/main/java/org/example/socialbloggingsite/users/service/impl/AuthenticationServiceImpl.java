@@ -1,26 +1,29 @@
 package org.example.socialbloggingsite.users.service.impl;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import org.example.socialbloggingsite.users.dtos.UserDtoLogin;
+import org.example.socialbloggingsite.users.service.AuthenticationService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.example.socialbloggingsite.users.Repositories.UserRepository;
+import org.example.socialbloggingsite.users.repositories.UserRepository;
 import org.example.socialbloggingsite.users.dtos.UserDtoCreate;
 import org.example.socialbloggingsite.users.model.User;
 import org.springframework.util.StringUtils;
 
 @Service
-public class AuthenticationService {
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+public class AuthenticationServiceImpl implements AuthenticationService {
+    UserRepository userRepository;
+    PasswordEncoder passwordEncoder;
+    AuthenticationManager authenticationManager;
 
-    public AuthenticationService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.authenticationManager = authenticationManager;
-    }
 
 //    public User signup(UserDtoLogin input) {
 //        System.out.println(input.toString());
@@ -31,16 +34,18 @@ public class AuthenticationService {
 //        return userRepository.save(user);
 //    }
 
-    public User authenticate(UserDtoCreate input) {
+    @Override
+    public User authenticate(UserDtoLogin input) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        input.getEmail(),
+                        input.getUserName(),
                         input.getPassword()
                 )
         );
-        return userRepository.findByEmail(input.getEmail()).orElseThrow();
+        return userRepository.findByUsername(input.getUserName()).orElseThrow(() -> new UsernameNotFoundException("User Or Password not found"));
     }
 
+    @Override
     public String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {

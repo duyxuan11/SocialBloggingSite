@@ -1,6 +1,10 @@
-package org.example.socialbloggingsite.user.config;
+package org.example.socialbloggingsite.config;
 
-import org.example.socialbloggingsite.user.Repositories.UserRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.example.socialbloggingsite.users.repositories.UserRepository;
+import org.example.socialbloggingsite.users.model.User;
+import org.example.socialbloggingsite.utils.constants.Role;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,8 +16,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
+@Slf4j
 public class ApplicationConfig {
     private final UserRepository userRepository;
+    private final String ADMIN_USERNAME = "admin";
+    private final String ADMIN_PASSWORD = "admin123";
 
     public ApplicationConfig(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -21,7 +28,7 @@ public class ApplicationConfig {
 
     @Bean
     UserDetailsService userDetailsService() {
-        return username -> userRepository.findByEmail(username).orElseThrow(()
+        return username -> userRepository.findByUsername(username).orElseThrow(()
                 -> new UsernameNotFoundException("User not found"));
     }
 
@@ -38,10 +45,30 @@ public class ApplicationConfig {
 
     @Bean
     AuthenticationProvider authenticationProvider() {
+        log.info("1");
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setUserDetailsService(userDetailsService());
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         return daoAuthenticationProvider;
+    }
+
+    @Bean
+    ApplicationRunner applicationRunner(UserRepository userRepository) {
+        log.info("Starting application runner ...");
+        return args -> {
+            if (!userRepository.existsByUsername(ADMIN_USERNAME)){
+                User user = User.builder()
+                                .username(ADMIN_USERNAME)
+                                .password(passwordEncoder().encode(ADMIN_PASSWORD))
+                                .email("admin@gmail.com")
+                                .imageUrl("https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg")
+                                .role(Role.ADMIN)
+                                .createdBy(ADMIN_USERNAME)
+                                .build();
+
+                userRepository.save(user);
+            }
+        };
     }
 
 

@@ -12,7 +12,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UpdateUserDto {
+public class UserDtoUpdate {
     String username;
     String email;
     String firstName;

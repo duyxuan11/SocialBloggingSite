@@ -2,6 +2,7 @@ package org.example.socialbloggingsite.articles.dto;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.example.socialbloggingsite.categories.dto.CategoryDtoResponse;
 
 import java.util.Date;
 
@@ -10,11 +11,12 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class GetArticleDto {
+public class ArticleDtoResponse {
+    int id;
     String title;
     String content;
     Date createdAt;
-    String category;
-    Integer user_id;
-
+    String imageUrl;
+    UserDtoResponse user;
+    CategoryDtoResponse category;
 }

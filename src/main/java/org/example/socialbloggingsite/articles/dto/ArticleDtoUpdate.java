@@ -1,54 +1,19 @@
 package org.example.socialbloggingsite.articles.dto;
 
-public class UpdateArticleDto {
-    private String title;
-    private String content;
-    private String published;
-    private String category;
-    private int user_id;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
-    public String getTitle() {
-        return title;
-    }
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class ArticleDtoUpdate {
+    String title;
+    String content;
+    String published;
+    int categoryId;
+    int userId;
 
-    public UpdateArticleDto setTitle(String title) {
-        this.title = title;
-        return this;
-    }
 
-    public String getContent() {
-        return content;
-    }
-
-    public UpdateArticleDto setContent(String content) {
-        this.content = content;
-        return this;
-    }
-
-    public String getPublished() {
-        return published;
-    }
-
-    public UpdateArticleDto setPublished(String published) {
-        this.published = published;
-        return this;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public UpdateArticleDto setCategory(String category) {
-        this.category = category;
-        return this;
-    }
-
-    public int getUser_id() {
-        return user_id;
-    }
-
-    public UpdateArticleDto setUser_id(int user_id) {
-        this.user_id = user_id;
-        return this;
-    }
 }
