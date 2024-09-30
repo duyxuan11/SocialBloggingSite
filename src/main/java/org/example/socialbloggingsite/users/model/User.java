@@ -1,16 +1,19 @@
-package org.example.socialbloggingsite.user.model;
+package org.example.socialbloggingsite.users.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.example.socialbloggingsite.articles.model.Article;
+import org.example.socialbloggingsite.categories.models.Category;
+import org.example.socialbloggingsite.comments.models.Comment;
+import org.example.socialbloggingsite.favorites.models.Favorite;
+import org.example.socialbloggingsite.follows.models.Follower;
 import org.example.socialbloggingsite.utils.base.BaseEntity;
 import org.example.socialbloggingsite.utils.constants.Gender;
 import org.example.socialbloggingsite.utils.constants.Role;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
@@ -30,7 +33,32 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 @EntityListeners(AuditingEntityListener.class)
-public class User extends BaseEntity {
+public class User extends BaseEntity implements UserDetails {
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
     @Column(unique = true, nullable = false)
     @NotNull(message = "userName must be not null")
     String username;
@@ -42,6 +70,10 @@ public class User extends BaseEntity {
     @Column(unique = true, nullable = false)
     @NotNull(message = "email must be not null")
     String email;
+
+    @Column(nullable = false,columnDefinition = "TEXT")
+    @NotNull(message = "image must be not null")
+    String imageUrl;
 
     String firstName;
     String lastName;
@@ -69,10 +101,14 @@ public class User extends BaseEntity {
     //favorites
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonManagedReference
-    Set<Favourite> comments;
+    Set<Favorite> favorites;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    @JsonManagedReference
-    Set<Comment> comments;
+    //Follow users
+    @OneToMany(mappedBy = "follower", fetch = FetchType.LAZY)
+    @JsonBackReference
+    List<Follower> follower;
 
+    @OneToMany(mappedBy = "followee", fetch = FetchType.LAZY)
+    @JsonBackReference
+    List<Follower> followee;
 }

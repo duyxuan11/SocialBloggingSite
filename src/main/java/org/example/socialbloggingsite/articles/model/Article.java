@@ -1,112 +1,60 @@
 package org.example.socialbloggingsite.articles.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import org.example.socialbloggingsite.user.model.User;
-import org.hibernate.annotations.UpdateTimestamp;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+import org.example.socialbloggingsite.categories.models.Category;
+import org.example.socialbloggingsite.comments.models.Comment;
+import org.example.socialbloggingsite.favorites.models.Favorite;
+import org.example.socialbloggingsite.users.model.User;
+import org.example.socialbloggingsite.utils.base.BaseEntity;
 
-import javax.xml.crypto.Data;
-import java.util.Date;
+import java.util.Set;
 
-@Entity
-public class Article {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+@Entity(name = "articles")
+@Table
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class Article extends BaseEntity {
+
+    @Column(nullable = false, unique = true, columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+    @NotNull(message = "title must not be null")
+    String title;
+
+    @Lob
+    @NotNull(message = "content must not be null")
+    @Column(nullable = false, columnDefinition = "LONGTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+    String content;
 
     @Column(nullable = false)
-    private String title;
-    @Lob
-    @Column(columnDefinition = "TEXT", nullable = false)
-    private String content;
+    @NotNull(message = "image must not be null")
+    String imageUrl;
 
-    @Column(nullable = true)
-    private String published;
-    @Column(nullable = true)
-    private String category;
 
-    @UpdateTimestamp
-    @Column(updatable = false, name = "created_at")
-    private Date createdAt;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    @JsonManagedReference
+    @NotNull(message = "user_id must not be null")
+    User user;
 
-    @UpdateTimestamp
-    @Column(name = "updated_at")
-    private Date updatedAt;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    @JsonManagedReference
+    @NotNull(message = "category_id must not be null")
+    Category category;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    @JsonIgnore
-    private User user;
+    @OneToMany(mappedBy = "article",fetch = FetchType.LAZY)
+    @JsonManagedReference
+    Set<Comment> comments;
 
-    public int getId() {
-        return id;
-    }
+    @OneToMany(mappedBy = "article",fetch = FetchType.LAZY)
+    @JsonManagedReference
+    Set<Favorite> favorites;
 
-    public Article setId(int id) {
-        this.id = id;
-        return this;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public Article setTitle(String title) {
-        this.title = title;
-        return this;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public Article setContent(String content) {
-        this.content = content;
-        return this;
-    }
-
-    public String getPublished() {
-        return published;
-    }
-
-    public Article setPublished(String published) {
-        this.published = published;
-        return this;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public Article setCategory(String category) {
-        this.category = category;
-        return this;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public Article setUser(User user) {
-        this.user = user;
-        return this;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public Article setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-        return this;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public Article setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
-        return this;
-    }
 }

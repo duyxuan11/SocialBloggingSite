@@ -5,6 +5,11 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import org.example.socialbloggingsite.users.service.JWTService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,23 +22,38 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
-public class JWTService {
+@RequiredArgsConstructor
+@Getter
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class JWTServiceImpl implements JWTService {
     @Value("${security.jwt.secret-key}")
-    private String secretKey;
+    String secretKey;
 
     //Time expiration token
     @Value("${security.jwt.expiration-time}")
-    private long expirationTime;
+    long expirationTime;
 
-    @Autowired
-    private JwtTokenBlackListService jwtTokenBlackListService;
+    final JwtTokenBlackListServiceImpl jwtTokenBlackListService;
 
     //Get User Name From JWT Token
+    @Override
     public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);
     }
+
+    @Override
+    public String generateToken(UserDetails userDetails) {
+        return generateToken(new HashMap<>(), userDetails);
+    }
+
+    @Override
+    public boolean isTokenValid(String token, UserDetails userDetails) {
+        final String username = extractEmail(token);
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token) && !jwtTokenBlackListService.isBlacklisted(token));
+    }
+
     //Export data from JWT
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
@@ -56,16 +76,8 @@ public class JWTService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
-    }
-
     public String generateToken(Map<String, Object> claims, UserDetails userDetails) {
         return buildToken(claims,userDetails,expirationTime);
-    }
-
-    public long getExpirationTime(){
-        return expirationTime;
     }
 
     private String buildToken(
@@ -83,16 +95,11 @@ public class JWTService {
                 .compact();
     }
 
-    public boolean isTokenExpired(String token) {
+    private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
-    public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String username = extractEmail(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token) && !jwtTokenBlackListService.isBlacklisted(token));
-    }
-
-    public Date extractExpiration(String token) {
+    private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
 }

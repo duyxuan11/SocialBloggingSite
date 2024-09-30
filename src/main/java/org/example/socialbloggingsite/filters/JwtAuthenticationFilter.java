@@ -1,11 +1,11 @@
-package org.example.socialbloggingsite.config;
+package org.example.socialbloggingsite.filters;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.example.socialbloggingsite.user.service.JWTService;
-import org.springframework.context.annotation.ComponentScan;
+import lombok.extern.slf4j.Slf4j;
+import org.example.socialbloggingsite.users.service.impl.JWTServiceImpl;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,13 +20,14 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import java.io.IOException;
 
 @Component
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final HandlerExceptionResolver handlerExceptionResolver;
     private final UserDetailsService userDetailsService;
-    private final JWTService jwtService;
+    private final JWTServiceImpl jwtService;
 
-    public JwtAuthenticationFilter(JWTService jwtService, UserDetailsService userDetailsService, HandlerExceptionResolver handlerExceptionResolver) {
+    public JwtAuthenticationFilter(JWTServiceImpl jwtService, UserDetailsService userDetailsService, HandlerExceptionResolver handlerExceptionResolver) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
         this.handlerExceptionResolver = handlerExceptionResolver;
@@ -34,6 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,@NonNull HttpServletResponse response,@NonNull FilterChain filterChain) throws ServletException, IOException {
+        log.info("2");
         final String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
