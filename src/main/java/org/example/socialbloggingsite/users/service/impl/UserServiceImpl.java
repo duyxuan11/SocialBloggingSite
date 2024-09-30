@@ -1,12 +1,10 @@
-package org.example.socialbloggingsite.user.service;
+package org.example.socialbloggingsite.users.service.impl;
 
-import org.example.socialbloggingsite.user.Repositories.UserRepository;
-import org.example.socialbloggingsite.user.dtos.UpdateUserDto;
-import org.example.socialbloggingsite.user.model.User;
+import org.example.socialbloggingsite.users.Repositories.UserRepository;
+import org.example.socialbloggingsite.users.dtos.UserDtoUpdate;
+import org.example.socialbloggingsite.users.model.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class UserService {
@@ -18,7 +16,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User updateUser(UpdateUserDto input) throws Exception {
+    public User updateUser(UserDtoUpdate input) throws Exception {
         try {
             User user = userRepository.findByEmail(input.getEmail()).orElseThrow(() -> new Exception("Email User Not Correct"));
             String fullName = input.getFullName() == null ? user.getFullName() : input.getFullName();

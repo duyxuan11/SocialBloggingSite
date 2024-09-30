@@ -1,4 +1,4 @@
-package org.example.socialbloggingsite.user.config;
+package org.example.socialbloggingsite.config;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

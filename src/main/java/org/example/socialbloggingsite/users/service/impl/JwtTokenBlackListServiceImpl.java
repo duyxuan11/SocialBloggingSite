@@ -1,4 +1,4 @@
-package org.example.socialbloggingsite.user.service;
+package org.example.socialbloggingsite.users.service.impl;
 
 import org.springframework.stereotype.Service;
 

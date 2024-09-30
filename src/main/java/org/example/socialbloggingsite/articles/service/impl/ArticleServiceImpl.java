@@ -1,13 +1,12 @@
 package org.example.socialbloggingsite.articles.service;
 
-import org.example.socialbloggingsite.articles.dtos.UpdateArticleDto;
+import org.example.socialbloggingsite.articles.dto.ArticleDtoUpdate;
 import org.example.socialbloggingsite.articles.model.Article;
 import org.example.socialbloggingsite.articles.repositories.ArticleRepository;
-import org.example.socialbloggingsite.user.Repositories.UserRepository;
-import org.example.socialbloggingsite.user.model.User;
+import org.example.socialbloggingsite.users.Repositories.UserRepository;
+import org.example.socialbloggingsite.users.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -25,7 +24,7 @@ public class ArticleService {
         this.userRepository = userRepository;
     }
 
-    public Article createArticle(UpdateArticleDto input) throws Exception {
+    public Article createArticle(ArticleDtoUpdate input) throws Exception {
         try {
             if(input.getTitle() == null || input.getUser_id() == 0 || input.getContent() == null){
                 throw new Exception("Title name or content is required");
@@ -56,7 +55,7 @@ public class ArticleService {
         return articles;
     }
 
-    public Article updateArticle(UpdateArticleDto input, Long id) throws Exception {
+    public Article updateArticle(ArticleDtoUpdate input, Long id) throws Exception {
         try {
             User user = userRepository.findById(input.getUser_id()).orElseThrow(() -> new Exception("User Not Found"));
             Article article = articleRepository.findById(id).orElseThrow(() -> new Exception("Article Not Found"));

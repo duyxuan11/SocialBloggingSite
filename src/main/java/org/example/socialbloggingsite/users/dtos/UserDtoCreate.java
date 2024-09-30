@@ -1,4 +1,4 @@
-package org.example.socialbloggingsite.user.dtos;
+package org.example.socialbloggingsite.users.dtos;
 
 public class LoginUserDto {
     private String fullName;

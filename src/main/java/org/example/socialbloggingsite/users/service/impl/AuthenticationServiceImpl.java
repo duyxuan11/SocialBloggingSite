@@ -1,14 +1,13 @@
-package org.example.socialbloggingsite.user.service;
+package org.example.socialbloggingsite.users.service.impl;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.example.socialbloggingsite.user.Repositories.UserRepository;
-import org.example.socialbloggingsite.user.dtos.LoginUserDto;
-import org.example.socialbloggingsite.user.dtos.RegisterUserDto;
-import org.example.socialbloggingsite.user.model.User;
+import org.example.socialbloggingsite.users.Repositories.UserRepository;
+import org.example.socialbloggingsite.users.dtos.UserDtoCreate;
+import org.example.socialbloggingsite.users.model.User;
 import org.springframework.util.StringUtils;
 
 @Service
@@ -23,16 +22,16 @@ public class AuthenticationService {
         this.authenticationManager = authenticationManager;
     }
 
-    public User signup(RegisterUserDto input) {
-        System.out.println(input.toString());
-        var user = new User()
-                .setFullName(input.getFullName())
-                .setEmail(input.getEmail())
-                .setPassword(passwordEncoder.encode(input.getPassword()));
-        return userRepository.save(user);
-    }
+//    public User signup(UserDtoLogin input) {
+//        System.out.println(input.toString());
+//        var user = new User()
+//                .setFullName(input.getFullName())
+//                .setEmail(input.getEmail())
+//                .setPassword(passwordEncoder.encode(input.getPassword()));
+//        return userRepository.save(user);
+//    }
 
-    public User authenticate(LoginUserDto input) {
+    public User authenticate(UserDtoCreate input) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         input.getEmail(),

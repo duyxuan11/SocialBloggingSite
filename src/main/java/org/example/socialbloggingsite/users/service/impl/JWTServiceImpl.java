@@ -1,4 +1,4 @@
-package org.example.socialbloggingsite.user.service;
+package org.example.socialbloggingsite.users.service.impl;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

@@ -1,4 +1,4 @@
-package org.example.socialbloggingsite.user.response;
+package org.example.socialbloggingsite.users.response;
 
 public class LoginResponse {
     private String token;

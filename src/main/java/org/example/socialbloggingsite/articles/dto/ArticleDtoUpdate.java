@@ -1,6 +1,6 @@
-package org.example.socialbloggingsite.articles.dtos;
+package org.example.socialbloggingsite.articles.dto;
 
-public class GetArticleDto {
+public class UpdateArticleDto {
     private String title;
     private String content;
     private String published;
@@ -11,7 +11,7 @@ public class GetArticleDto {
         return title;
     }
 
-    public GetArticleDto setTitle(String title) {
+    public UpdateArticleDto setTitle(String title) {
         this.title = title;
         return this;
     }
@@ -20,7 +20,7 @@ public class GetArticleDto {
         return content;
     }
 
-    public GetArticleDto setContent(String content) {
+    public UpdateArticleDto setContent(String content) {
         this.content = content;
         return this;
     }
@@ -29,7 +29,7 @@ public class GetArticleDto {
         return published;
     }
 
-    public GetArticleDto setPublished(String published) {
+    public UpdateArticleDto setPublished(String published) {
         this.published = published;
         return this;
     }
@@ -38,7 +38,7 @@ public class GetArticleDto {
         return category;
     }
 
-    public GetArticleDto setCategory(String category) {
+    public UpdateArticleDto setCategory(String category) {
         this.category = category;
         return this;
     }
@@ -47,7 +47,7 @@ public class GetArticleDto {
         return user_id;
     }
 
-    public GetArticleDto setUser_id(int user_id) {
+    public UpdateArticleDto setUser_id(int user_id) {
         this.user_id = user_id;
         return this;
     }
