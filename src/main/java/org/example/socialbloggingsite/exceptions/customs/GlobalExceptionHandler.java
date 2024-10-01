@@ -1,6 +1,7 @@
 package org.example.socialbloggingsite.exceptions.customs;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.nio.file.AccessDeniedException;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
@@ -50,6 +52,38 @@ public class GlobalExceptionHandler {
             problemDetail.setProperty("description", "Unknown Error!");
             return problemDetail;
         }
+        return problemDetail;
+    }
+
+    @ExceptionHandler(CustomRunTimeException.class)
+    public ProblemDetail handleCustomRunTimeException(CustomRunTimeException e) {
+        int statusCode;
+        // Kiểm tra thông điệp lỗi và xác định mã trạng thái cùng mô tả phù hợp
+        switch (e.getMessage()) {
+            case "Username Exists":
+                statusCode = 409;
+                break;
+            case "Token Is Expired":
+                statusCode = 401; // Unauthorized
+                break;
+            case "Email Exists":
+                statusCode = 409;
+                break;
+            case "User Not Found":
+                statusCode = 404;
+                break;
+            case "Refresh Token Has Expired", "Invalid Token":
+                statusCode = 403;
+                break;
+            default:
+                statusCode = 500; // Internal Server Error
+                break;
+        }
+
+        // Tạo ProblemDetail dựa trên mã trạng thái và mô tả
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(statusCode), e.getMessage());
+        problemDetail.setProperty("description", e.getMessage());
+
         return problemDetail;
     }
 }

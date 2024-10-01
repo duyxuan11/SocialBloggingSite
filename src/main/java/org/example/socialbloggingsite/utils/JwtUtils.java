@@ -10,6 +10,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.example.socialbloggingsite.exceptions.customs.CustomRunTimeException;
+import org.example.socialbloggingsite.users.repositories.RefreshTokenRepository;
+import org.example.socialbloggingsite.users.repositories.UserRepository;
+import org.example.socialbloggingsite.users.services.JwtTokenBlackListService;
 import org.example.socialbloggingsite.users.services.impl.JwtTokenBlackListServiceImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,12 +25,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import static org.example.socialbloggingsite.exceptions.customs.ErrorCode.INVALID_TOKEN;
+import static org.example.socialbloggingsite.exceptions.customs.ErrorCode.TOKEN_EXPIRED;
+
 @Service
 @RequiredArgsConstructor
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
 public class JwtUtils {
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final UserRepository userRepository;
     @Value("${security.jwt.secret-key}")
     String secretKey;
 
@@ -34,10 +43,13 @@ public class JwtUtils {
     @Value("${security.jwt.expiration-time}")
     long expirationTime;
 
-    final JwtTokenBlackListServiceImpl jwtTokenBlackListService;
+    @Value("${security.jwt.expiration-refresh-time}")
+    long expirationRefreshTime;
+
+    final JwtTokenBlackListService jwtTokenBlackListService;
 
     //Get User Name From JWT Token
-    public String extractEmail(String token) {
+    public String extractUser(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
@@ -46,8 +58,12 @@ public class JwtUtils {
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String username = extractEmail(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token) && !jwtTokenBlackListService.isBlacklisted(token));
+        final String username = extractUser(token);
+        if (refreshTokenRepository.findByUser(userRepository.findByUsername(username).get()).isEmpty()) {
+            throw new CustomRunTimeException(INVALID_TOKEN);
+        }
+
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
     //Export data from JWT
@@ -110,6 +126,33 @@ public class JwtUtils {
         log.info(claims.getExpiration().toString());
         log.info("hi token");
         log.info(claims.getIssuedAt().toString());
+    }
+
+    //create refreshToken
+    public String generateRefreshToken(UserDetails userDetails) {
+        return generateRefreshToken(new HashMap<>(), userDetails);
+    }
+    public String generateRefreshToken(Map<String, Object> claims, UserDetails userDetails) {
+        return buildRefreshToken(claims,userDetails,expirationRefreshTime);
+    }
+
+    private String buildRefreshToken(
+            Map<String, Object> claims,
+            UserDetails userDetails,
+            long expiration
+    ){
+        return Jwts
+                .builder()
+                .setClaims(claims)
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public String getUsernameFromToken(String token) {
+        return extractClaim(token, Claims::getSubject);
     }
 
 }

@@ -1,29 +1,29 @@
-package org.example.socialbloggingsite.favorites;
+package org.example.socialbloggingsite.follows;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.example.socialbloggingsite.articles.Article;
-import org.example.socialbloggingsite.users.models.User;
+import org.example.socialbloggingsite.users.models.UserEntity;
 import org.example.socialbloggingsite.utils.base.BaseEntity;
 
 @Table
-@Entity(name = "favorites")
+@Entity(name = "followers")
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Favorite extends BaseEntity {
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
-    @JsonManagedReference
-    User user;
+public class FollowerEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
+    @JoinColumn(name = "followee")
     @JsonManagedReference
-    Article article;
+    UserEntity followee;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "follower")
+    @JsonManagedReference
+    UserEntity follower;
 }

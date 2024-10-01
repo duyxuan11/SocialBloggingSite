@@ -16,14 +16,14 @@ import java.time.Instant;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 @EntityListeners(AuditingEntityListener.class)
-public class RefreshToken {
+public class RefreshTokenEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    User user;
+    UserEntity user;
 
     @Column(nullable = false, unique = true)
     String token;

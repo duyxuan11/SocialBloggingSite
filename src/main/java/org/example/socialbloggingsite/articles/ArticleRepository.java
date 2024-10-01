@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ArticleRepository extends JpaRepository<Article, Long> {
-    Optional<Article> findById(int id);
+public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
+    Optional<ArticleEntity> findById(int id);
 
-    List<Article> findByUserId(int user_id);
+    List<ArticleEntity> findByUserId(int user_id);
 }

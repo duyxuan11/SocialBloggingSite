@@ -6,10 +6,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.example.socialbloggingsite.articles.Article;
-import org.example.socialbloggingsite.comments.Comment;
-import org.example.socialbloggingsite.favorites.Favorite;
-import org.example.socialbloggingsite.follows.Follower;
+import org.example.socialbloggingsite.articles.ArticleEntity;
+import org.example.socialbloggingsite.comments.CommentEntity;
+import org.example.socialbloggingsite.favorites.FavoriteEntity;
+import org.example.socialbloggingsite.follows.FollowerEntity;
 import org.example.socialbloggingsite.utils.base.BaseEntity;
 import org.example.socialbloggingsite.utils.constants.Gender;
 import org.example.socialbloggingsite.utils.constants.Role;
@@ -32,7 +32,7 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 @EntityListeners(AuditingEntityListener.class)
-public class User extends BaseEntity implements UserDetails {
+public class UserEntity extends BaseEntity implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
@@ -91,23 +91,23 @@ public class User extends BaseEntity implements UserDetails {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonManagedReference
-    Set<Article> articles;
+    Set<ArticleEntity> articles;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonManagedReference
-    Set<Comment> comments;
+    Set<CommentEntity> comments;
 
     //favorites
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonManagedReference
-    Set<Favorite> favorites;
+    Set<FavoriteEntity> favorites;
 
     //Follow users
     @OneToMany(mappedBy = "follower", fetch = FetchType.LAZY)
     @JsonBackReference
-    List<Follower> follower;
+    List<FollowerEntity> follower;
 
     @OneToMany(mappedBy = "followee", fetch = FetchType.LAZY)
     @JsonBackReference
-    List<Follower> followee;
+    List<FollowerEntity> followee;
 }

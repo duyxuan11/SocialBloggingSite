@@ -1,5 +1,6 @@
 package org.example.socialbloggingsite.users.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -13,8 +14,10 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserLoginDto {
     @NotNull(message = "username is required")
-//    @NotBlank(message = "username is required")
+    @NotBlank(message = "username must not be null")
     private String username;
+
     @NotNull(message = "password is required")
+    @NotBlank(message = "password must not be null")
     private String password;
 }

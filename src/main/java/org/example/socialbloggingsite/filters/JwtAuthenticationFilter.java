@@ -1,5 +1,6 @@
 package org.example.socialbloggingsite.filters;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -44,22 +45,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try{
             final String jwt = authHeader.substring(7); //remove "Bear " from token
-            final String userEmail = jwtService.extractEmail(jwt);
-
+            final String userEmail = jwtService.extractUser(jwt);
+            log.info("4");
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             if (userEmail!=null && authentication == null){
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
 
-                if (jwtService.isTokenValid(jwt, userDetails)){
-                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                            userDetails,
-                            null,
-                            userDetails.getAuthorities()
-                    );
-                    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                }
+                    if (jwtService.isTokenValid(jwt, userDetails)){
+                        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                                userDetails,
+                                null,
+                                userDetails.getAuthorities()
+                        );
+                        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                    }
             }
             filterChain.doFilter(request, response);
         }

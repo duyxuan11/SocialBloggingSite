@@ -6,8 +6,12 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.example.socialbloggingsite.users.dto.TokenRefreshDto;
+import org.example.socialbloggingsite.users.dto.UserCreateDto;
 import org.example.socialbloggingsite.users.dto.UserLoginDto;
 import org.example.socialbloggingsite.users.dto.UserLoginResponse;
+import org.example.socialbloggingsite.users.services.AuthenticationService;
+import org.example.socialbloggingsite.users.services.JwtTokenBlackListService;
 import org.example.socialbloggingsite.users.services.impl.JwtTokenBlackListServiceImpl;
 import org.example.socialbloggingsite.utils.JwtUtils;
 import org.springframework.http.ResponseEntity;
@@ -21,14 +25,14 @@ import org.example.socialbloggingsite.users.services.impl.AuthenticationServiceI
 @Slf4j
 public class AuthenticationController {
     JwtUtils jwtUtils;
-    AuthenticationServiceImpl authenticationService;
-    JwtTokenBlackListServiceImpl jwtTokenBlackListService;
+    AuthenticationService authenticationService;
+    JwtTokenBlackListService jwtTokenBlackListService;
 
-//    @PostMapping("/signup")
-//    public ResponseEntity<?> register(@RequestBody UserDtoCreate userDtoCreate, Model model){
-//        var registerUser = authenticationService.signUp(userDtoCreate);
-//        return ResponseEntity.ok(registerUser);
-//    }
+    @PostMapping("/signup")
+    public ResponseEntity<?> register(@RequestBody @Valid UserCreateDto userCreateDto){
+        var registerUser = authenticationService.signUp(userCreateDto);
+        return ResponseEntity.ok(registerUser);
+    }
 
     @PostMapping("/login")
     public ResponseEntity<UserLoginResponse> authenticate(@RequestBody @Valid UserLoginDto loginUserDto){
@@ -36,11 +40,17 @@ public class AuthenticationController {
             return ResponseEntity.ok(loginResponse);
     }
 
+    @PostMapping("/refresh-token")
+    public ResponseEntity<?> refreshToken(@RequestBody @Valid TokenRefreshDto request){
+//        String oldToken = authenticationService.getJwtFromRequest(request);
+//        return ResponseEntity.ok(authenticationService.refreshToken(oldToken));
+        var response = authenticationService.refreshToken(request);
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request){
         authenticationService.logOut(request);
-        String token = authenticationService.getJwtFromRequest(request);
-        jwtTokenBlackListService.addBlacklist(token);
         return ResponseEntity.ok("Logout successful");
     }
 

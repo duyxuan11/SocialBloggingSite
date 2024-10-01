@@ -5,10 +5,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.example.socialbloggingsite.categories.Category;
-import org.example.socialbloggingsite.comments.Comment;
-import org.example.socialbloggingsite.favorites.Favorite;
-import org.example.socialbloggingsite.users.models.User;
+import org.example.socialbloggingsite.categories.CategoryEntity;
+import org.example.socialbloggingsite.comments.CommentEntity;
+import org.example.socialbloggingsite.favorites.FavoriteEntity;
+import org.example.socialbloggingsite.users.models.UserEntity;
 import org.example.socialbloggingsite.utils.base.BaseEntity;
 
 import java.util.Set;
@@ -21,7 +21,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Article extends BaseEntity {
+public class ArticleEntity extends BaseEntity {
 
     @Column(nullable = false, unique = true, columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
     @NotNull(message = "title must not be null")
@@ -41,20 +41,20 @@ public class Article extends BaseEntity {
     @JoinColumn
     @JsonManagedReference
     @NotNull(message = "user_id must not be null")
-    User user;
+    UserEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     @JsonManagedReference
     @NotNull(message = "category_id must not be null")
-    Category category;
+    CategoryEntity category;
 
     @OneToMany(mappedBy = "article",fetch = FetchType.LAZY)
     @JsonManagedReference
-    Set<Comment> comments;
+    Set<CommentEntity> comments;
 
     @OneToMany(mappedBy = "article",fetch = FetchType.LAZY)
     @JsonManagedReference
-    Set<Favorite> favorites;
+    Set<FavoriteEntity> favorites;
 
 }

@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.example.socialbloggingsite.users.dto.UserResponse;
-import org.example.socialbloggingsite.users.models.User;
+import org.example.socialbloggingsite.users.models.UserEntity;
 import org.example.socialbloggingsite.users.repositories.UserRepository;
 import org.example.socialbloggingsite.users.services.UserService;
 import org.modelmapper.ModelMapper;
@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse getUser(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        var username = (User) authentication.getPrincipal();
+        var username = (UserEntity) authentication.getPrincipal();
         var user = userRepository.findByUsername(username.getUsername()).orElseThrow(()->new RuntimeException("User not found"));
         return modelMapper.map(user, UserResponse.class);
     }
