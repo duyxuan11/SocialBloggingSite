@@ -4,8 +4,11 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.example.socialbloggingsite.users.service.impl.JWTServiceImpl;
+import org.example.socialbloggingsite.utils.JwtUtils;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,17 +24,14 @@ import java.io.IOException;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final HandlerExceptionResolver handlerExceptionResolver;
-    private final UserDetailsService userDetailsService;
-    private final JWTServiceImpl jwtService;
+    HandlerExceptionResolver handlerExceptionResolver;
+    UserDetailsService userDetailsService;
+    JwtUtils jwtService;
 
-    public JwtAuthenticationFilter(JWTServiceImpl jwtService, UserDetailsService userDetailsService, HandlerExceptionResolver handlerExceptionResolver) {
-        this.jwtService = jwtService;
-        this.userDetailsService = userDetailsService;
-        this.handlerExceptionResolver = handlerExceptionResolver;
-    }
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,@NonNull HttpServletResponse response,@NonNull FilterChain filterChain) throws ServletException, IOException {

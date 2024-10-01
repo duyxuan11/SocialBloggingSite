@@ -2,7 +2,7 @@ package org.example.socialbloggingsite.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.socialbloggingsite.users.repositories.UserRepository;
-import org.example.socialbloggingsite.users.model.User;
+import org.example.socialbloggingsite.users.models.User;
 import org.example.socialbloggingsite.utils.constants.Role;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;

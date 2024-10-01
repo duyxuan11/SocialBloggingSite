@@ -6,8 +6,8 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.example.socialbloggingsite.exceptions.custom.CustomRunTimeException;
-import org.example.socialbloggingsite.exceptions.custom.ErrorCode;
+import org.example.socialbloggingsite.exceptions.customs.CustomRunTimeException;
+import org.example.socialbloggingsite.exceptions.customs.ErrorCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
