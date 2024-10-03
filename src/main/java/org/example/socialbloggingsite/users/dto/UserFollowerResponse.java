@@ -12,7 +12,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserResponse {
+public class UserFollowerResponse {
     int id;
     String username;
     String firstName;
@@ -22,5 +22,5 @@ public class UserResponse {
     String createdBy;
     Role role;
     Gender gender;
-    UserFollowerResponse followers;
+
 }

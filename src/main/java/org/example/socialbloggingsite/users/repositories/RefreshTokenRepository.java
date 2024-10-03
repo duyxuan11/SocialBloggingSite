@@ -17,5 +17,6 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshTokenEntity
     @Modifying
     int deleteByUser(UserEntity user);
 
+    Boolean existsByUser(UserEntity user);
     Optional<RefreshTokenEntity> findByUser(UserEntity user);
 }

@@ -49,7 +49,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var user = modelMapper.map(input, UserEntity.class);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(Role.USER);
-        user.setImageUrl("https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg");
         userRepository.save(user);
         return modelMapper.map(user, UserResponse.class);
     }

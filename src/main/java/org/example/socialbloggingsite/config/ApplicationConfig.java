@@ -61,7 +61,6 @@ public class ApplicationConfig {
                                 .username(ADMIN_USERNAME)
                                 .password(passwordEncoder().encode(ADMIN_PASSWORD))
                                 .email("admin@gmail.com")
-                                .imageUrl("https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg")
                                 .role(Role.ADMIN)
                                 .createdBy(ADMIN_USERNAME)
                                 .build();

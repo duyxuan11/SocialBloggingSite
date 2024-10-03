@@ -22,6 +22,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
+import java.util.List;
 
 @Component
 @Slf4j
@@ -33,6 +34,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     UserDetailsService userDetailsService;
     JwtUtils jwtService;
 
+    private final List<String> publicUrls = List.of(
+            "/api/auth/login",
+            "/api/auth/signup",
+            "/api/auth/register",
+            "/api/auth/refresh-token"
+    );
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,@NonNull HttpServletResponse response,@NonNull FilterChain filterChain) throws ServletException, IOException {
@@ -43,10 +50,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
+        String requestURI = request.getRequestURI();
+
+        if (publicUrls.contains(requestURI)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         try{
             final String jwt = authHeader.substring(7); //remove "Bear " from token
             final String userEmail = jwtService.extractUser(jwt);
-            log.info("4");
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             if (userEmail!=null && authentication == null){

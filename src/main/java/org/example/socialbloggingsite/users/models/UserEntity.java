@@ -70,10 +70,6 @@ public class UserEntity extends BaseEntity implements UserDetails {
     @NotNull(message = "email must be not null")
     String email;
 
-    @Column(nullable = false,columnDefinition = "TEXT")
-    @NotNull(message = "image must be not null")
-    String imageUrl;
-
     String firstName;
     String lastName;
     Date birthDay;

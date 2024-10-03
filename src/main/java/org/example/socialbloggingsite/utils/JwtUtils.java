@@ -59,7 +59,7 @@ public class JwtUtils {
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUser(token);
-        if (refreshTokenRepository.findByUser(userRepository.findByUsername(username).get()).isEmpty()) {
+        if (!refreshTokenRepository.existsByUser(userRepository.findByUsername(username).get())) {
             throw new CustomRunTimeException(INVALID_TOKEN);
         }
 

@@ -19,7 +19,5 @@ public class UserUpdateDto {
     String lastName;
     String password;
     Date birthDate;
-    String imgUrl;
-    Role role;
     Gender gender;
 }
