@@ -26,7 +26,11 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SecurityConfiguration {
     String[] PUBLIC_URLS = {
-            "api/auth/login", "/api/auth/logout", "/api/auth/register"};
+            "api/auth/login",
+            "/api/auth/signup",
+            "/api/auth/register",
+            "/api/auth/refresh-token",
+            "api/articles"};
     String[] PRIVATE_ADMIN_URLS = {
             "/api/admin/**"};
     String[] PRIVATE_USERS_URLS = {"/api/user/**"};
@@ -50,21 +54,17 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-//                .csrf().disable()
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((requests) -> {
                     requests.requestMatchers(PUBLIC_URLS).permitAll()
                             .requestMatchers(PRIVATE_ADMIN_URLS).hasAnyAuthority(Authentication.ROLE_ADMIN.name())
                             .requestMatchers(PRIVATE_USERS_URLS).hasAnyAuthority(Authentication.ROLE_USER.name(),Authentication.ROLE_ADMIN.name())
                             .requestMatchers(SWAGGER_WHITELIST).permitAll()
-//                            .permitAll()
                             .anyRequest().authenticated();
-//                            .anyRequest().permitAll();
                 })
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> {
                     httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
                 })
-//                .httpBasic(Customizer.withDefaults());
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

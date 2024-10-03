@@ -1,0 +1,17 @@
+package org.example.socialbloggingsite.favorites;
+
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+import org.example.socialbloggingsite.articles.dto.ArticleResponse;
+import org.example.socialbloggingsite.articles.dto.UserArticleResponse;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class FavoriteResponse {
+    int id;
+    ArticleResponse article;
+    UserArticleResponse user;
+}

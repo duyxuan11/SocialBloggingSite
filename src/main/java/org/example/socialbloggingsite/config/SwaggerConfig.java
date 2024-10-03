@@ -21,7 +21,7 @@ GroupedOpenApi groupedOpenApi() {
     @Bean
     OpenAPI customOpenAPI() {
         return new OpenAPI()
-                .info(new Info().title("API book storage online").version("1.0"))
+                .info(new Info().title("API Social Blogging online").version("1.0"))
                 .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
                 .components(
                         new Components()

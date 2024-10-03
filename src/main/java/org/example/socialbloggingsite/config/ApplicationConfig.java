@@ -2,7 +2,7 @@ package org.example.socialbloggingsite.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.socialbloggingsite.users.repositories.UserRepository;
-import org.example.socialbloggingsite.users.model.User;
+import org.example.socialbloggingsite.users.models.UserEntity;
 import org.example.socialbloggingsite.utils.constants.Role;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
@@ -57,11 +57,10 @@ public class ApplicationConfig {
         log.info("Starting application runner ...");
         return args -> {
             if (!userRepository.existsByUsername(ADMIN_USERNAME)){
-                User user = User.builder()
+                UserEntity user = UserEntity.builder()
                                 .username(ADMIN_USERNAME)
                                 .password(passwordEncoder().encode(ADMIN_PASSWORD))
                                 .email("admin@gmail.com")
-                                .imageUrl("https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg")
                                 .role(Role.ADMIN)
                                 .createdBy(ADMIN_USERNAME)
                                 .build();

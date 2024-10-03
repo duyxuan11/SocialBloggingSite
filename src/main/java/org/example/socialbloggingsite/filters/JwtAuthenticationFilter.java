@@ -4,8 +4,11 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.example.socialbloggingsite.users.service.impl.JWTServiceImpl;
+import org.example.socialbloggingsite.utils.JwtUtils;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,20 +21,25 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
+import java.util.List;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final HandlerExceptionResolver handlerExceptionResolver;
-    private final UserDetailsService userDetailsService;
-    private final JWTServiceImpl jwtService;
+    HandlerExceptionResolver handlerExceptionResolver;
+    UserDetailsService userDetailsService;
+    JwtUtils jwtService;
 
-    public JwtAuthenticationFilter(JWTServiceImpl jwtService, UserDetailsService userDetailsService, HandlerExceptionResolver handlerExceptionResolver) {
-        this.jwtService = jwtService;
-        this.userDetailsService = userDetailsService;
-        this.handlerExceptionResolver = handlerExceptionResolver;
-    }
+    private final List<String> publicUrls = List.of(
+            "/api/auth/login",
+            "/api/auth/signup",
+            "/api/auth/register",
+            "/api/auth/refresh-token",
+            "/api/articles"
+    );
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,@NonNull HttpServletResponse response,@NonNull FilterChain filterChain) throws ServletException, IOException {
@@ -42,14 +50,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
+        String requestURI = request.getRequestURI();
+
+        if (publicUrls.contains(requestURI)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         try{
             final String jwt = authHeader.substring(7); //remove "Bear " from token
-            final String userEmail = jwtService.extractEmail(jwt);
+            final String userName = jwtService.extractUser(jwt);
 
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-            if (userEmail!=null && authentication == null){
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+            if (userName!=null && authentication == null){
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(userName);
 
                 if (jwtService.isTokenValid(jwt, userDetails)){
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
