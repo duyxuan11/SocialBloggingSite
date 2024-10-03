@@ -11,9 +11,4 @@ import lombok.experimental.FieldDefaults;
 public class ArticleUpdateDto {
     String title;
     String content;
-    String published;
-    int categoryId;
-    int userId;
-
-
 }

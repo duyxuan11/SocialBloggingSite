@@ -75,6 +75,12 @@ public class GlobalExceptionHandler {
             case "Refresh Token Has Expired", "Invalid Token":
                 statusCode = 403;
                 break;
+            case "Article Not Found":
+                statusCode = 404;
+                break;
+            case "Title Exists":
+                statusCode = 409;
+                break;
             default:
                 statusCode = 500; // Internal Server Error
                 break;
