@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.example.socialbloggingsite.categories.CategoryEntity;
 import org.example.socialbloggingsite.comments.CommentEntity;
 import org.example.socialbloggingsite.favorites.FavoriteEntity;
 import org.example.socialbloggingsite.users.models.UserEntity;
@@ -32,22 +31,11 @@ public class ArticleEntity extends BaseEntity {
     @Column(nullable = false, columnDefinition = "LONGTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
     String content;
 
-    @Column(nullable = false)
-    @NotNull(message = "image must not be null")
-    String imageUrl;
-
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     @JsonManagedReference
     @NotNull(message = "user_id must not be null")
     UserEntity user;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
-    @JsonManagedReference
-    @NotNull(message = "category_id must not be null")
-    CategoryEntity category;
 
     @OneToMany(mappedBy = "article",fetch = FetchType.LAZY)
     @JsonManagedReference

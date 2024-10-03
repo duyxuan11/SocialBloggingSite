@@ -26,7 +26,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SecurityConfiguration {
     String[] PUBLIC_URLS = {
-            "api/auth/login", "/api/auth/signup", "/api/auth/register","/api/auth/refresh-token"};
+            "api/auth/login", "/api/auth/signup", "/api/auth/register","/api/auth/refresh-token","api/articles"};
     String[] PRIVATE_ADMIN_URLS = {
             "/api/admin/**"};
     String[] PRIVATE_USERS_URLS = {"/api/user/**"};
