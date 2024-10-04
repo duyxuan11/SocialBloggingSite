@@ -2,7 +2,7 @@ package org.example.socialbloggingsite.articles.dto;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.example.socialbloggingsite.categories.dto.CategoryResponse;
+import org.example.socialbloggingsite.comments.dto.CommentArticleResponse;
 
 import java.util.Date;
 
@@ -16,7 +16,7 @@ public class ArticleResponse {
     String title;
     String content;
     Date createdAt;
-    String imageUrl;
-    UserResponse user;
-    CategoryResponse category;
+    int totalFavorites;
+    UserArticleResponse user;
+    CommentArticleResponse comments;
 }

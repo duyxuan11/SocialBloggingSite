@@ -14,6 +14,8 @@ public enum ErrorCode {
     USER_NOT_FOUND(404, "User Not Found",HttpStatus.NOT_FOUND),
     REFRESH_TOKEN_EXPIRED(403,"Refresh Token Has Expired",HttpStatus.FORBIDDEN),
     INVALID_TOKEN(403, "Invalid Token",HttpStatus.UNAUTHORIZED),
+    ARTICLE_NOT_FOUND(404, "Article Not Found",HttpStatus.NOT_FOUND),
+    TITLE_EXISTS(409, "Title Exists",HttpStatus.CONFLICT),
             ;
 
     private final int code;
