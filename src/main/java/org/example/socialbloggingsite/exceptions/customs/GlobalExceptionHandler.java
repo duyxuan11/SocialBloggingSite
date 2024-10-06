@@ -55,41 +55,12 @@ public class GlobalExceptionHandler {
         return problemDetail;
     }
 
-    @ExceptionHandler(CustomRunTimeException.class)
-    public ProblemDetail handleCustomRunTimeException(CustomRunTimeException e) {
-        int statusCode;
-        // Kiểm tra thông điệp lỗi và xác định mã trạng thái cùng mô tả phù hợp
-        switch (e.getMessage()) {
-            case "Username Exists":
-                statusCode = 409;
-                break;
-            case "Token Is Expired":
-                statusCode = 401; // Unauthorized
-                break;
-            case "Email Exists":
-                statusCode = 409;
-                break;
-            case "User Not Found":
-                statusCode = 404;
-                break;
-            case "Refresh Token Has Expired", "Invalid Token":
-                statusCode = 403;
-                break;
-            case "Article Not Found","Comment Not Found":
-                statusCode = 404;
-                break;
-            case "Title Exists":
-                statusCode = 409;
-                break;
-            default:
-                statusCode = 500; // Internal Server Error
-                break;
-        }
+    @ExceptionHandler(value = CustomRunTimeException.class)
+    public ProblemDetail handleCusTomRuntimeException(CustomRunTimeException e) {
+        ErrorCode errorCode = e.getErrorCode();
 
-        // Tạo ProblemDetail dựa trên mã trạng thái và mô tả
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(statusCode), e.getMessage());
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(errorCode.getCode()), e.getMessage());
         problemDetail.setProperty("description", e.getMessage());
-
         return problemDetail;
     }
 }
