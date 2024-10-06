@@ -18,12 +18,12 @@ import org.example.socialbloggingsite.utils.base.BaseEntity;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FavoriteEntity extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
+    @JoinColumn(unique = true)
     @JsonManagedReference
     UserEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
+    @JoinColumn(unique = true)
     @JsonManagedReference
     ArticleEntity article;
 }
