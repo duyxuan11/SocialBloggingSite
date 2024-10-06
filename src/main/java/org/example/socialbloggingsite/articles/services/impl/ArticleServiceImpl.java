@@ -9,6 +9,8 @@ import org.example.socialbloggingsite.articles.dto.ArticleResponse;
 import org.example.socialbloggingsite.articles.dto.ArticleUpdateDto;
 import org.example.socialbloggingsite.articles.dto.ArticlesCreateDto;
 import org.example.socialbloggingsite.articles.services.ArticleService;
+import org.example.socialbloggingsite.comments.CommentRepository;
+import org.example.socialbloggingsite.comments.dto.CommentArticleResponse;
 import org.example.socialbloggingsite.exceptions.customs.CustomRunTimeException;
 import org.example.socialbloggingsite.exceptions.customs.ErrorCode;
 import org.example.socialbloggingsite.users.repositories.UserRepository;
@@ -29,6 +31,7 @@ public class ArticleServiceImpl implements ArticleService {
     ArticleRepository articleRepository;
     UserRepository userRepository;
     ModelMapper modelMapper;
+    private final CommentRepository commentRepository;
 
     @Override
     public ArticleResponse createArticle(ArticlesCreateDto input) {
@@ -53,7 +56,7 @@ public class ArticleServiceImpl implements ArticleService {
                 .toList();
         Map<String, Object> response = new HashMap<>();
         response.put("total", articles.getTotalPages());
-        response.put("articles", articleResponses);
+        response.put("data", articleResponses);
         return response;
     }
 
@@ -75,6 +78,13 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ArticleResponse getArticleById(Long articleId) {
         var article = articleRepository.findById(articleId).orElseThrow(()->new CustomRunTimeException(ErrorCode.ARTICLE_NOT_FOUND));
-        return modelMapper.map(article, ArticleResponse.class);
+        var comment = commentRepository.findByArticleId(Integer.parseInt(String.valueOf(articleId)));
+        var articleResponse = modelMapper.map(article, ArticleResponse.class);
+        List<CommentArticleResponse> articleList = comment
+                .stream()
+                .map(article1 -> modelMapper.map(article1, CommentArticleResponse.class))
+                .toList();
+        articleResponse.setComments(articleList);
+        return articleResponse;
     }
 }

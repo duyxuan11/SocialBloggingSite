@@ -16,6 +16,7 @@ public enum ErrorCode {
     INVALID_TOKEN(403, "Invalid Token",HttpStatus.UNAUTHORIZED),
     ARTICLE_NOT_FOUND(404, "Article Not Found",HttpStatus.NOT_FOUND),
     TITLE_EXISTS(409, "Title Exists",HttpStatus.CONFLICT),
+    COMMENT_NOT_FOUND(404, "Comment Not Found",HttpStatus.NOT_FOUND),
             ;
 
     private final int code;
