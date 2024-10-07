@@ -6,6 +6,7 @@ import org.example.socialbloggingsite.filters.JwtAuthenticationFilter;
 import org.example.socialbloggingsite.utils.constants.Authentication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -26,11 +27,11 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SecurityConfiguration {
     String[] PUBLIC_URLS = {
-            "api/auth/login", "/api/auth/signup", "/api/auth/register","/api/auth/refresh-token", "api/articles"};
+            "api/auth/login", "/api/auth/signup", "/api/auth/register","/api/auth/refresh-token"};
     String[] PRIVATE_ADMIN_URLS = {
             "/api/admin/**"};
     String[] PRIVATE_USERS_URLS = {"/api/user/**"};
-
+    String[] PUBLIC_ARTICLES_GET ={"/api/articles"};
     AuthenticationProvider authenticationProvider;
     JwtAuthenticationFilter jwtAuthenticationFilter;
 
@@ -56,6 +57,7 @@ public class SecurityConfiguration {
                     requests.requestMatchers(PUBLIC_URLS).permitAll()
                             .requestMatchers(PRIVATE_ADMIN_URLS).hasAnyAuthority(Authentication.ROLE_ADMIN.name())
                             .requestMatchers(PRIVATE_USERS_URLS).hasAnyAuthority(Authentication.ROLE_USER.name(),Authentication.ROLE_ADMIN.name())
+                            .requestMatchers(HttpMethod.GET,PUBLIC_ARTICLES_GET).permitAll()
                             .requestMatchers(SWAGGER_WHITELIST).permitAll()
 //                            .permitAll()
                             .anyRequest().authenticated();

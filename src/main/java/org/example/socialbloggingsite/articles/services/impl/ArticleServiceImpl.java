@@ -3,6 +3,7 @@ package org.example.socialbloggingsite.articles.services.impl;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.example.socialbloggingsite.articles.ArticleEntity;
 import org.example.socialbloggingsite.articles.ArticleRepository;
 import org.example.socialbloggingsite.articles.dto.ArticleResponse;
@@ -27,6 +28,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
 public class ArticleServiceImpl implements ArticleService {
     ArticleRepository articleRepository;
     UserRepository userRepository;
@@ -63,10 +65,12 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ArticleResponse updateArticle(ArticleUpdateDto input, Long id){
         var oldArticle = articleRepository.findById(id).orElseThrow(() -> new CustomRunTimeException(ErrorCode.ARTICLE_NOT_FOUND));
-        var newArticle = modelMapper.map(input, ArticleEntity.class);
-        modelMapper.map(oldArticle, newArticle);
-        articleRepository.save(newArticle);
-        return modelMapper.map(newArticle, ArticleResponse.class);
+        var title = input.getTitle() == null ? oldArticle.getTitle() : input.getTitle();
+        var content = input.getContent() == null ? oldArticle.getContent() : input.getContent();
+        oldArticle.setTitle(title);
+        oldArticle.setContent(content);
+        articleRepository.save(oldArticle);
+        return modelMapper.map(oldArticle, ArticleResponse.class);
     }
 
     @Override
