@@ -18,6 +18,6 @@ public class UserUpdateDto {
     String firstName;
     String lastName;
     String password;
-    Date birthDate;
+    Date birthDay;
     Gender gender;
 }
