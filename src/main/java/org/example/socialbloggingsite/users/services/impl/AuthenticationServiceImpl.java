@@ -64,11 +64,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 )
         );
         String token = jwtUtils.generateToken(user);
-//        String refreshToken = jwtUtils.generateRefreshToken(user);
-        var refreshToken = refreshTokenService.createRefreshToken(user.getId());
+        //get refreshToken
+        String refreshToken;
+        var refreshTokenEntity = refreshTokenRepository.findByUser(user);
+        if(refreshTokenEntity.isPresent() && !refreshTokenService.isRefreshTokenExpired(refreshTokenEntity.get())) {
+            refreshToken = refreshTokenEntity.get().getToken();
+        }else refreshToken = refreshTokenService.createRefreshToken(user.getId()).getToken();
         return UserLoginResponse.builder()
                 .token(token)
-                .refreshToken(refreshToken.getToken())
+                .refreshToken(refreshToken)
                 .username(user.getUsername())
                 .id(user.getId())
                 .role(user.getRole())
