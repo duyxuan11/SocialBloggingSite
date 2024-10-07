@@ -37,20 +37,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUser(UserUpdateDto input, Long userId){
         var oldUser = userRepository.findById(userId).orElseThrow(()->new CustomRunTimeException(ErrorCode.USER_NOT_FOUND));
-        String username = input.getUsername() == null ? oldUser.getUsername() : input.getUsername();
         String newPassword = input.getPassword() == null ? oldUser.getPassword() : passwordEncoder.encode(input.getPassword());
-        String email = input.getEmail() == null ? oldUser.getEmail() : input.getEmail();
         String firstName = input.getFirstName() == null ? oldUser.getFirstName() : input.getFirstName();
         String lastName = input.getLastName() == null ? oldUser.getLastName() : input.getLastName();
         Date birthDay = input.getBirthDay()== null ? oldUser.getBirthDay() : input.getBirthDay();
         Gender gender = input.getGender() == null ? oldUser.getGender() : input.getGender();
         oldUser.setPassword(newPassword);
-        oldUser.setEmail(email);
         oldUser.setFirstName(firstName);
         oldUser.setLastName(lastName);
         oldUser.setBirthDay(birthDay);
         oldUser.setGender(gender);
-        oldUser.setUsername(username);
         userRepository.save(oldUser);
     }
 
