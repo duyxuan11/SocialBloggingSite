@@ -13,11 +13,9 @@ import java.util.Date;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserUpdateDto {
-    String username;
-    String email;
     String firstName;
     String lastName;
     String password;
-    Date birthDate;
+    Date birthDay;
     Gender gender;
 }

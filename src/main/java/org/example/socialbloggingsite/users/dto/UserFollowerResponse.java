@@ -18,7 +18,7 @@ public class UserFollowerResponse {
     String firstName;
     String lastName;
     String email;
-    Date birthDate;
+    Date birthDay;
     String createdBy;
     Role role;
     Gender gender;
