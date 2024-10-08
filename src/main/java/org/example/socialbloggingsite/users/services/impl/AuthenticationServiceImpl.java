@@ -69,7 +69,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var refreshTokenEntity = refreshTokenRepository.findByUser(user);
         if(refreshTokenEntity.isPresent() && !refreshTokenService.isRefreshTokenExpired(refreshTokenEntity.get())) {
             refreshToken = refreshTokenEntity.get().getToken();
-        }else refreshToken = refreshTokenService.createRefreshToken(user.getId()).getToken();
+        }else {
+            refreshTokenEntity.ifPresent(refreshTokenRepository::delete);
+            refreshToken = refreshTokenService.createRefreshToken(user.getId()).getToken();
+        }
         return UserLoginResponse.builder()
                 .token(token)
                 .refreshToken(refreshToken)
