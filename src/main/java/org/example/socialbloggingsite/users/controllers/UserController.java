@@ -3,6 +3,8 @@ package org.example.socialbloggingsite.users.controllers;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.example.socialbloggingsite.exceptions.customs.CustomRunTimeException;
+import org.example.socialbloggingsite.exceptions.customs.ErrorCode;
 import org.example.socialbloggingsite.users.dto.UserResponse;
 import org.example.socialbloggingsite.users.dto.UserUpdateDto;
 import org.example.socialbloggingsite.users.services.UserService;
@@ -10,6 +12,8 @@ import org.example.socialbloggingsite.utils.JwtUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RequestMapping("/api/users")
 @RestController
@@ -20,22 +24,22 @@ public class UserController {
     JwtUtils jwtUtils;
 
 
-    @GetMapping("{userId}")
+    @GetMapping(value = {"/","/{userId}"})
     @Transactional
-    public ResponseEntity<?> getUser(@PathVariable Long userId) {
-        if(userId == null) {
-            return ResponseEntity.badRequest().body("No userId provided. Try again?");
+    public ResponseEntity<?> getUser(@PathVariable Optional<Long> userId) {
+        if(userId.isEmpty()) {
+            throw new CustomRunTimeException(ErrorCode.USER_ID_INVALID);
         }
-        UserResponse currentUser = userService.getUser(userId);
+        UserResponse currentUser = userService.getUser(userId.get());
         return ResponseEntity.ok(currentUser);
     }
 
-    @PutMapping("/{userId}")
-    public ResponseEntity<?> updateUser(@PathVariable Long userId, @RequestBody UserUpdateDto request){
-        if(userId == null) {
-            return ResponseEntity.badRequest().body("No userId provided. Try again?");
+    @PutMapping(value = {"/","/{userId}"})
+    public ResponseEntity<?> updateUser(@PathVariable Optional<Long> userId, @RequestBody UserUpdateDto request){
+        if(userId.isEmpty()) {
+            throw new CustomRunTimeException(ErrorCode.USER_ID_INVALID);
         }
-        userService.updateUser(request, userId);
+        userService.updateUser(request, userId.get());
         return ResponseEntity.ok("Updated user successfully.");
     }
 }

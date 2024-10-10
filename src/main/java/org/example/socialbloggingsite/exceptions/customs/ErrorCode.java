@@ -18,6 +18,10 @@ public enum ErrorCode {
     TITLE_EXISTS(409, "Title Exists",HttpStatus.CONFLICT),
     COMMENT_NOT_FOUND(404, "Comment Not Found",HttpStatus.NOT_FOUND),
     ARTICLE_ID_INVALID(400, "Invalid ArticleId supplied",HttpStatus.BAD_REQUEST),
+    COMMENT_ID_INVALID(400, "Invalid Comment Id supplied",HttpStatus.BAD_REQUEST),
+    FAVORITE_ID_INVALID(400, "Invalid Favorite Id supplied",HttpStatus.NOT_FOUND),
+    FOLLOWER_ID_INVALID(400, "Invalid Follower Id supplied",HttpStatus.BAD_REQUEST),
+    USER_ID_INVALID(400, "Invalid User Id supplied",HttpStatus.BAD_REQUEST),
             ;
 
     private final int code;
