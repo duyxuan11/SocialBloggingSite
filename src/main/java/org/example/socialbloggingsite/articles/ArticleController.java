@@ -1,6 +1,8 @@
 package org.example.socialbloggingsite.articles;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -9,11 +11,17 @@ import org.example.socialbloggingsite.articles.dto.ArticleUpdateDto;
 import org.example.socialbloggingsite.articles.dto.ArticlesCreateDto;
 import org.example.socialbloggingsite.articles.services.ArticleService;
 import org.example.socialbloggingsite.articles.services.impl.ArticleServiceImpl;
+import org.example.socialbloggingsite.exceptions.customs.CustomRunTimeException;
+import org.example.socialbloggingsite.exceptions.customs.ErrorCode;
+import org.springdoc.core.service.GenericParameterService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.pattern.PatternParseException;
+
+import java.util.Optional;
 
 @RequestMapping("/api/articles")
 @RestController
@@ -26,6 +34,7 @@ public class ArticleController {
     final static String DEFAULT_FILTER_SiZE = "10";
     final static Sort DEFAULT_FILTER_SORT = Sort.by(Sort.Direction.DESC, "createdAt");
     final static Sort DEFAULT_FILTER_SORT_ASC = Sort.by(Sort.Direction.ASC, "createdAt");
+    private final GenericParameterService parameterBuilder;
 
     @PostMapping()
     public ResponseEntity<?> createArticle(@RequestBody @Valid ArticlesCreateDto request){
@@ -33,30 +42,31 @@ public class ArticleController {
         return ResponseEntity.ok(article);
     }
 
-    @GetMapping("/{articleId}")
-    public ResponseEntity<?> getArticleById(@PathVariable Long articleId)  {
-        if(articleId == null) {
-            return ResponseEntity.badRequest().body("Invalid ID supplied");
+    @GetMapping(value = {"/","/{articleId}"})
+    public ResponseEntity<?> getArticleById(@PathVariable Optional<Long> articleId)  {
+        if(articleId.isEmpty()) {
+            throw new CustomRunTimeException(ErrorCode.ARTICLE_ID_INVALID);
         }
-        var article = articleService.getArticleById(articleId);
+        var article = articleService.getArticleById(articleId.get());
         return ResponseEntity.ok(article);
     }
 
-    @PutMapping("/{articleId}")
-    public ResponseEntity<?> updateArticle(@PathVariable Long articleId, @RequestBody(required = false) ArticleUpdateDto request){
-        if(articleId == null) {
-            return ResponseEntity.badRequest().body("Invalid ID supplied");
+    @PutMapping(value = {"/","/{articleId}"})
+    @ResponseBody
+    public ResponseEntity<?> updateArticle(@PathVariable Optional<Long> articleId, @RequestBody(required = false) ArticleUpdateDto request){
+        if(articleId.isEmpty()) {
+            throw new CustomRunTimeException(ErrorCode.ARTICLE_ID_INVALID);
         }
-        var article = articleService.updateArticle(request,articleId);
+        var article = articleService.updateArticle(request,articleId.get());
         return ResponseEntity.ok(article);
     }
 
-    @DeleteMapping("/{articleId}")
-    public ResponseEntity<?> deleteArticle(@PathVariable Long articleId){
-        if(articleId == null) {
-            return ResponseEntity.badRequest().body("Invalid ID supplied");
+    @DeleteMapping(value = {"/","/{articleId}"})
+    public ResponseEntity<?> deleteArticle(@PathVariable Optional<Long> articleId){
+        if(articleId.isEmpty()) {
+            throw new CustomRunTimeException(ErrorCode.ARTICLE_ID_INVALID);
         }
-        articleService.deleteArticle(articleId);
+        articleService.deleteArticle(articleId.get());
         return ResponseEntity.ok("Article deleted successfully");
     }
 

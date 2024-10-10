@@ -49,7 +49,7 @@ public class GlobalExceptionHandler {
         }
         if (problemDetail == null) {
             problemDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(500), e.getMessage());
-            problemDetail.setProperty("description", "Unknown Error!");
+            problemDetail.setProperty("description", e.getMessage());
             return problemDetail;
         }
         return problemDetail;

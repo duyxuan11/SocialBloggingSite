@@ -17,6 +17,7 @@ public enum ErrorCode {
     ARTICLE_NOT_FOUND(404, "Article Not Found",HttpStatus.NOT_FOUND),
     TITLE_EXISTS(409, "Title Exists",HttpStatus.CONFLICT),
     COMMENT_NOT_FOUND(404, "Comment Not Found",HttpStatus.NOT_FOUND),
+    ARTICLE_ID_INVALID(400, "Invalid ArticleId supplied",HttpStatus.BAD_REQUEST),
             ;
 
     private final int code;
