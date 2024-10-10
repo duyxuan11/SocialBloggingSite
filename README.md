@@ -24,7 +24,7 @@ Alternatively, you can run the app directly without packaging it like so -
   mvn spring-boot:run
 ```
 ### 3. Build and run the app using IDE
-You can import the packages in the file pom.xml and start if done
+You can build project and start if done
 ## Functionality overview
 The example application is a social blogging site (i.e. a Medium.com clone) called "Conduit". It uses a custom API for all requests, including authentication.
 ### General functionality:
